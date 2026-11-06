@@ -130,6 +130,12 @@ async def _process_supported_link(message: types.Message, service: str, url: str
     if service == "twitter":
         from handlers import twitter
         await twitter.handle_tweet_links(message, direct_url=url)
+        return
+
+    if service == "adult":
+        from handlers import adult
+        await adult.process_adult_url(message, url=url)
+        return
 
 
 def _has_multiple_supported_links(message: types.Message) -> bool:

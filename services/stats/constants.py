@@ -1,5 +1,5 @@
-SERVICE_ORDER = ["Instagram", "Threads", "TikTok", "YouTube", "SoundCloud", "Spotify", "Pinterest", "Twitter", "Other"]
-SERVICE_COLORS = ["#6C5DD3", "#222222", "#FF6B6B", "#28C76F", "#FF8800", "#1DB954", "#E60023", "#00CFE8", "#FFA500"]
+SERVICE_ORDER = ["Instagram", "Threads", "TikTok", "YouTube", "SoundCloud", "Spotify", "Pinterest", "Twitter", "Adult", "Other"]
+SERVICE_COLORS = ["#6C5DD3", "#222222", "#FF6B6B", "#28C76F", "#FF8800", "#1DB954", "#E60023", "#00CFE8", "#C026D3", "#FFA500"]
 SERVICE_EMOJI = {
     "Instagram": "📸",
     "Threads": "🧵",
@@ -9,6 +9,7 @@ SERVICE_EMOJI = {
     "Spotify": "🟢",
     "Pinterest": "📌",
     "Twitter": "🐦",
+    "Adult": "🔞",
     "Other": "📦",
 }
 SERVICE_DISPLAY_NAMES = {
@@ -20,6 +21,7 @@ SERVICE_DISPLAY_NAMES = {
     "spotify": "Spotify",
     "pinterest": "Pinterest",
     "twitter": "X / Twitter",
+    "adult": "Adult (NSFW)",
 }
 VALID_STATS_PERIODS = {"Week", "Month", "Year"}
 VALID_STATS_MODES = {"total", "split"}

@@ -14,7 +14,8 @@ def welcome_message():
         '<tg-emoji emoji-id="5231309843435919433">🐦</tg-emoji> X / Twitter\n'
         '<tg-emoji emoji-id="5233448977667492819">🎧</tg-emoji> SoundCloud\n'
         '<tg-emoji emoji-id="5391001065418172193">🟢</tg-emoji> Spotify\n'
-        '<tg-emoji emoji-id="5233210422298974231">📌</tg-emoji> Pinterest\n\n'
+        '<tg-emoji emoji-id="5233210422298974231">📌</tg-emoji> Pinterest\n'
+        "🔞 Adult (NSFW): Pornhub, XVideos, XNXX, XHamster, SpankBang, RedGifs, Eporner\n\n"
         "Use the buttons below to try inline mode, tune settings, or share the bot."
     )
 
@@ -309,6 +310,9 @@ def help_message(bot_username: str | None = None) -> str:
         "<blockquote expandable><b>🎧 SoundCloud & 🟢 Spotify</b>\n"
         "• High quality SoundCloud audio tracks\n"
         "• Spotify track matching & audio download</blockquote>\n\n"
+        "<blockquote expandable><b>🔞 Adult (NSFW)</b>\n"
+        "• Pornhub, XVideos, XNXX, XHamster, SpankBang, RedGifs, Eporner\n"
+        "• Videos only, adult content (18+)</blockquote>\n\n"
         f"<blockquote expandable><b>⚡ Inline Mode</b>\n"
         f"• Type <code>@{username} [link]</code> in any chat\n"
         "• Instant preview and direct media sharing</blockquote>\n\n"
@@ -381,7 +385,8 @@ def guest_help_message(bot_username: str) -> str:
         "• <b>YouTube</b> (videos, music)\n"
         "• <b>Twitter / X</b> (videos, gifs)\n"
         "• <b>SoundCloud & Spotify</b> (music)\n"
-        "• <b>Pinterest</b> (pins, videos)\n\n"
+        "• <b>Pinterest</b> (pins, videos)\n"
+        "• <b>Adult (NSFW)</b> (videos, 18+)\n\n"
         "<i>💡 Tip: Add me to this group or open a direct chat with @{bot_username} for full features and settings!</i>"
     ).format(bot_username=bot_username)
 
@@ -396,5 +401,5 @@ def guest_downloading_status(service_name: str) -> str:
 def guest_unsupported_link() -> str:
     return (
         "Sorry, no supported media link was found in your mention. "
-        "Please include a link from TikTok, Instagram, YouTube, X, SoundCloud, Spotify, or Pinterest."
+        "Please include a link from TikTok, Instagram, YouTube, X, SoundCloud, Spotify, Pinterest, or Adult (NSFW)."
     )

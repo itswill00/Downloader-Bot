@@ -48,6 +48,13 @@ _SERVICE_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         "twitter",
         re.compile(r"(https?://(www\.)?(twitter|x)\.com/\S+|https?://t\.co/\S+)", re.IGNORECASE),
     ),
+    (
+        "adult",
+        re.compile(
+            r"(https?://(?:www\.|m\.)?(?:pornhub|xvideos|xnxx|xhamster|spankbang|redgifs|eporner)\.(?:com)/\S+)",
+            re.IGNORECASE,
+        ),
+    ),
 )
 
 
@@ -78,6 +85,10 @@ def canonicalize_supported_url(service: str, url: str) -> str:
     elif service in {"soundcloud", "spotify"}:
         # Audio links keep meaningful path IDs/slugs; tracking lives in query/fragment.
         query = ""
+    elif service == "adult":
+        # Adult sites encode the video ID in the query string
+        # (e.g. Pornhub's ?viewkey=...), so it must be preserved.
+        query = parsed.query
     else:
         query = ""
 

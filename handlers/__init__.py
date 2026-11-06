@@ -12,6 +12,7 @@ from . import (
     pinterest,
     threads,
     guest,
+    adult,
 )
 from .admin_history_dialog import admin_history_dialog
 
@@ -29,6 +30,7 @@ router.include_routers(
     threads.router,
     soundcloud.router,
     pinterest.router,
+    adult.router,
     admin_history_dialog,
 )
 

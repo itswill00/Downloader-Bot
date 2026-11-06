@@ -81,6 +81,8 @@ class AnalyticsRepositoryMixin:
             return "Pinterest"
         if "twitter" in lower or "x_" in lower:
             return "Twitter"
+        if "adult" in lower:
+            return "Adult"
         return "Other"
 
     async def get_downloaded_files_by_service(self, period: str) -> dict[str, dict[str, int]]:
