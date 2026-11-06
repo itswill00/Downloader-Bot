@@ -376,6 +376,15 @@ def nothing_found():
     return "No media found. Check that the link is public, not expired, and points directly to a post or video."
 
 
+def adult_age_verification_required():
+    return (
+        "This adult site is showing an age-verification / login wall for this server, "
+        "so no video formats were exposed (common on XHamster from age-law regions). "
+        "Fix: put logged-in browser cookies at cookies/adult.txt, or set YTDLP_ADULT_PROXY to a proxy "
+        "in a region where the site allows anonymous access, then try again."
+    )
+
+
 def guest_help_message(bot_username: str) -> str:
     return (
         "👋 <b>aerichandesu — Guest Mode</b>\n\n"

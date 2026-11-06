@@ -40,6 +40,9 @@ def build_adult_ytdlp_options(**overrides: Any) -> dict[str, Any]:
         options["cookiefile"] = cookies_file.strip()
     elif os.path.isfile(DEFAULT_ADULT_COOKIES_FILE):
         options["cookiefile"] = DEFAULT_ADULT_COOKIES_FILE
+    proxy = os.getenv("YTDLP_ADULT_PROXY") or os.getenv("YTDLP_PROXY")
+    if proxy and proxy.strip():
+        options["proxy"] = proxy.strip()
     options["js_runtimes"] = {"deno": {}, "node": {}}
     options.update({key: value for key, value in overrides.items() if value is not None})
     return options

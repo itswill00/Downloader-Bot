@@ -155,6 +155,16 @@ async def download_adult_video(message: types.Message, direct_url: Optional[str]
             await safe_delete_message(status_message)
             await message.reply(bm.nothing_found())
             return
+        if not (info.get("formats") or []):
+            # e.g. XHamster serves an age-verification page with no formats
+            # from age-law regions; fail fast with an actionable message.
+            logging.error(
+                "Adult info has no formats (age verification wall?): url=%s",
+                summarize_url_for_log(url),
+            )
+            await safe_delete_message(status_message)
+            await message.reply(bm.adult_age_verification_required())
+            return
 
         video_id = str(info.get("id") or "adult")
         webpage_url = info.get("webpage_url") or url

@@ -48,6 +48,7 @@ async def test_download_adult_video_sends_video(monkeypatch, tmp_path):
         "id": "abc123",
         "title": "Test Adult Video",
         "webpage_url": "https://www.pornhub.com/view_video.php?viewkey=abc123",
+        "formats": [{"format_id": "x", "url": "https://example.com/v.mp4"}],
     }
 
     monkeypatch.setattr(adult, "get_message_text", lambda _m: "https://www.pornhub.com/view_video.php?viewkey=abc123")
@@ -93,3 +94,33 @@ async def test_download_adult_video_returns_none_path(monkeypatch):
     await adult.download_adult_video(message)
 
     message.reply.assert_awaited_once_with(adult.bm.nothing_found())
+
+
+@pytest.mark.asyncio
+async def test_download_adult_video_age_wall_when_no_formats(monkeypatch):
+    status_message = SimpleNamespace(delete=AsyncMock())
+    message = SimpleNamespace(
+        from_user=SimpleNamespace(id=7, username="tester", full_name="Tester"),
+        business_connection_id=None,
+        chat=SimpleNamespace(id=99, type="private"),
+        message_id=1,
+        answer=AsyncMock(return_value=status_message),
+        reply=AsyncMock(return_value=status_message),
+    )
+    info = {
+        "id": "xhRytaC",
+        "title": "Age walled",
+        "webpage_url": "https://xhamster.com/videos/x-xhRytaC",
+        "formats": [],
+    }
+    monkeypatch.setattr(adult, "get_message_text", lambda _m: "https://xhamster.com/videos/x-xhRytaC")
+    monkeypatch.setattr(adult, "react_to_message", AsyncMock())
+    monkeypatch.setattr(adult, "load_user_settings", AsyncMock(return_value={"captions": "on", "delete_message": "off", "info_buttons": "on", "url_button": "on", "audio_button": "on", "as_document": "off"}))
+    monkeypatch.setattr(adult, "get_bot_url", AsyncMock(return_value="https://t.me/angkutmedia_bot"))
+    monkeypatch.setattr(adult, "get_adult_video", Mock(return_value=info))
+    monkeypatch.setattr(adult, "safe_delete_message", AsyncMock())
+    monkeypatch.setattr(adult, "update_info", AsyncMock())
+
+    await adult.download_adult_video(message)
+
+    message.reply.assert_awaited_once_with(adult.bm.adult_age_verification_required())
