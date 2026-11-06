@@ -93,6 +93,7 @@ async def download_with_ytdlp_metrics(
     *,
     max_filesize: Optional[int] = None,
     merge_output_format: Optional[str] = "mp4",
+    on_progress=None,
 ) -> Optional[DownloadMetrics]:
     return await adult_media_service.download_with_ytdlp_metrics(
         url,
@@ -101,6 +102,7 @@ async def download_with_ytdlp_metrics(
         source,
         max_filesize=max_filesize,
         merge_output_format=merge_output_format,
+        on_progress=on_progress,
     )
 
 
@@ -196,6 +198,7 @@ async def download_adult_video(message: types.Message, direct_url: Optional[str]
                 YTDLP_FORMAT_ADULT,
                 "adult_video",
                 max_filesize=MAX_FILE_SIZE,
+                on_progress=on_progress,
             )
             return metrics
 

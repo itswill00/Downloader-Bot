@@ -15,9 +15,17 @@ from services.platforms.youtube_media import (
 from utils.download_manager import (
     DownloadConfig,
     DownloadMetrics,
+    DownloadProgress,
     ResilientDownloader,
     log_download_metrics,
 )
+
+
+def _safe_int(value: Any) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
 
 logging = logging.bind(service="adult_media")
 
@@ -75,6 +83,91 @@ class AdultMediaService:
 
     _resolve_downloaded_path = staticmethod(resolve_downloaded_path)
 
+    @staticmethod
+    def _build_progress_bridge(loop: asyncio.AbstractEventLoop, callback):
+        if callback is None:
+            return None
+        pending_tasks: set[asyncio.Task] = set()
+
+        async def _emit(progress: DownloadProgress) -> None:
+            try:
+                maybe = callback(progress)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
+            except Exception as exc:
+                logging.debug("Adult yt-dlp progress callback failed: error=%s", exc)
+
+        def _schedule(progress: DownloadProgress) -> None:
+            def _runner() -> None:
+                task = asyncio.create_task(_emit(progress))
+                pending_tasks.add(task)
+                task.add_done_callback(pending_tasks.discard)
+
+            loop.call_soon_threadsafe(_runner)
+
+        return _schedule
+
+    def _notify_progress(
+        self,
+        progress_callback,
+        *,
+        downloaded_bytes: int,
+        total_bytes: int,
+        started_at: float,
+        speed_bps: float,
+        eta_seconds: Optional[float],
+        done: bool,
+    ) -> None:
+        if progress_callback is None:
+            return
+        progress_callback(
+            DownloadProgress(
+                downloaded_bytes=max(0, int(downloaded_bytes)),
+                total_bytes=max(0, int(total_bytes)),
+                elapsed=max(0.001, time.monotonic() - started_at),
+                speed_bps=max(0.0, float(speed_bps or 0.0)),
+                eta_seconds=eta_seconds,
+                done=done,
+            )
+        )
+
+    def _build_progress_hook(self, progress_callback, started_at: float):
+        def _hook(status: dict[str, Any]) -> None:
+            if progress_callback is None:
+                return
+            state = status.get("status")
+            downloaded = _safe_int(status.get("downloaded_bytes"))
+            total = _safe_int(status.get("total_bytes")) or _safe_int(
+                status.get("total_bytes_estimate")
+            )
+            speed = float(status.get("speed") or 0.0)
+            eta = status.get("eta")
+            eta_seconds = float(eta) if isinstance(eta, (int, float)) else None
+            if state == "finished":
+                total = total or downloaded
+                self._notify_progress(
+                    progress_callback,
+                    downloaded_bytes=total,
+                    total_bytes=total,
+                    started_at=started_at,
+                    speed_bps=speed,
+                    eta_seconds=0.0,
+                    done=True,
+                )
+                return
+            if state == "downloading":
+                self._notify_progress(
+                    progress_callback,
+                    downloaded_bytes=downloaded,
+                    total_bytes=total,
+                    started_at=started_at,
+                    speed_bps=speed,
+                    eta_seconds=eta_seconds,
+                    done=False,
+                )
+
+        return _hook
+
     def get_video_info(self, url: str) -> Optional[dict[str, Any]]:
         try:
             ydl_opts = build_adult_ytdlp_options(
@@ -96,9 +189,11 @@ class AdultMediaService:
         *,
         max_filesize: Optional[int] = None,
         merge_output_format: Optional[str] = "mp4",
+        on_progress=None,
     ) -> Optional[DownloadMetrics]:
         out_path = self._downloader._resolve_target_path(filename)
         os.makedirs(os.path.dirname(out_path) or self._output_dir, exist_ok=True)
+        start = time.monotonic()
         ydl_opts = build_adult_ytdlp_options(
             format=format_selector,
             outtmpl=out_path,
@@ -107,7 +202,14 @@ class AdultMediaService:
             ydl_opts["merge_output_format"] = merge_output_format
         if max_filesize is not None:
             ydl_opts["max_filesize"] = int(max_filesize)
-        start = time.monotonic()
+        if on_progress is not None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = None
+            if loop is not None:
+                bridge = self._build_progress_bridge(loop, on_progress)
+                ydl_opts["progress_hooks"] = [self._build_progress_hook(bridge, start)]
         try:
             await asyncio.to_thread(self._run_ytdlp_download, url, ydl_opts)
             resolved_path = self._resolve_downloaded_path(out_path)

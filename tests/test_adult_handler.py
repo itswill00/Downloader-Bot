@@ -124,3 +124,18 @@ async def test_download_adult_video_age_wall_when_no_formats(monkeypatch):
     await adult.download_adult_video(message)
 
     message.reply.assert_awaited_once_with(adult.bm.adult_age_verification_required())
+
+
+def test_adult_progress_hook_reports_downloaded_bytes():
+    from services.platforms.adult_media import AdultMediaService
+    from unittest.mock import AsyncMock as _AM
+    svc = AdultMediaService.__new__(AdultMediaService)
+    seen = []
+    hook = svc._build_progress_hook(seen.append, started_at=__import__("time").monotonic())
+    hook({"status": "downloading", "downloaded_bytes": 500, "total_bytes": 1000, "speed": 123.0, "eta": 4})
+    assert len(seen) == 1
+    assert seen[0].downloaded_bytes == 500
+    assert seen[0].total_bytes == 1000
+    assert seen[0].done is False
+    hook({"status": "finished", "downloaded_bytes": 1000, "total_bytes": 1000})
+    assert seen[1].done is True
