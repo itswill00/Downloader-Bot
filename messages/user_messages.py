@@ -4,7 +4,7 @@ def cancel():
 
 def welcome_message():
     return (
-        '<b>Welcome to MaxLoad <tg-emoji emoji-id="5420141555233071341">❤️</tg-emoji></b>\n\n'
+        '<b>Welcome to aerichandesu <tg-emoji emoji-id="5420141555233071341">❤️</tg-emoji></b>\n\n'
         "Send one link, or paste several links in one message, and I'll download what I can.\n\n"
         "<b>Supported sites</b>\n"
         '<tg-emoji emoji-id="5233671414023753035">📷</tg-emoji> Instagram\n'
@@ -96,7 +96,7 @@ def captions(user_captions, post_caption, bot_url, *, limit: int = 1024):
             cut = cut[:amp]
         return cut
 
-    footer = '<tg-emoji emoji-id="5283080528818360566">🚀</tg-emoji> Powered by <a href="{bot_url}">MaxLoad</a>'.format(
+    footer = '<tg-emoji emoji-id="5283080528818360566">🚀</tg-emoji> Powered by <a href="{bot_url}">aerichandesu</a>'.format(
         bot_url=bot_url
     )
 
@@ -287,9 +287,9 @@ def category_settings_text(category: str) -> str:
 
 
 def help_message(bot_username: str | None = None) -> str:
-    username = bot_username or "MaxLoadBot"
+    username = bot_username or "angkutmedia_bot"
     return (
-        "<b>📖 MaxLoad Help & Guide</b>\n\n"
+        "<b>📖 aerichandesu Help & Guide</b>\n\n"
         "Send one link or paste multiple links in one message. The bot will automatically extract and deliver the media.\n\n"
         "<blockquote expandable><b>📷 Instagram & Threads</b>\n"
         "• Download Posts, Reels, IGTV & Stories\n"
@@ -319,11 +319,11 @@ def help_message(bot_username: str | None = None) -> str:
 
 
 def referral_message(bot_username: str, user_id: int, invited_count: int) -> str:
-    username = bot_username or "MaxLoadBot"
+    username = bot_username or "angkutmedia_bot"
     ref_link = f"https://t.me/{username}?start=ref_{user_id}"
     return (
         "<b>👥 Your Referral Program</b>\n\n"
-        "Invite friends to use MaxLoad! Share your personal referral link:\n"
+        "Invite friends to use aerichandesu! Share your personal referral link:\n"
         f"<code>{ref_link}</code>\n\n"
         f"Users invited: <b>{invited_count}</b>"
     )
@@ -374,7 +374,7 @@ def nothing_found():
 
 def guest_help_message(bot_username: str) -> str:
     return (
-        "👋 <b>MaxLoad — Guest Mode</b>\n\n"
+        "👋 <b>aerichandesu — Guest Mode</b>\n\n"
         "You summoned the bot in this chat! To download media, mention me with a link from any supported platform:\n\n"
         "• <b>TikTok</b> (videos, photos)\n"
         "• <b>Instagram & Threads</b> (reels, photos)\n"

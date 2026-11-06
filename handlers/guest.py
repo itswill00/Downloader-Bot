@@ -324,7 +324,7 @@ async def handle_guest_message(
                 title="Statistics",
                 description="View bot statistics in DM.",
                 input_message_content=InputTextMessageContent(
-                    message_text="📊 <b>MaxLoad Statistics</b>\n\nInteractive charts and stats are available in private chat.",
+                    message_text="📊 <b>aerichandesu Statistics</b>\n\nInteractive charts and stats are available in private chat.",
                     parse_mode="HTML",
                 ),
                 reply_markup=types.InlineKeyboardMarkup(
@@ -344,7 +344,7 @@ async def handle_guest_message(
         # Summoned directly without a supported link (e.g. @bot, @bot /help, @bot hello)
         article = InlineQueryResultArticle(
             id=f"guest_help_{uuid.uuid4().hex[:8]}",
-            title="MaxLoad — Guest Mode",
+            title="aerichandesu — Guest Mode",
             description="Summon me with a media link to download videos/audio directly here!",
             thumbnail_url=get_inline_service_icon("tiktok"),
             input_message_content=InputTextMessageContent(

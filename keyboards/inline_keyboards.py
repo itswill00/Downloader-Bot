@@ -8,7 +8,7 @@ from urllib.parse import quote
 def start_keyboard(
     bot_username: str | None = None, ref_user_id: int | None = None
 ) -> InlineKeyboardMarkup:
-    username = bot_username or "MaxLoadBot"
+    username = bot_username or "angkutmedia_bot"
     base_link = f"https://t.me/{username}"
 
     share_text = "Fast downloader bot for Instagram, TikTok, YouTube & more!"
@@ -492,7 +492,7 @@ def _stats_keyboard_legacy_bottom(current_period: str = "Week", mode: str = "tot
 
 
 def guest_help_keyboard(bot_username: str | None = None) -> InlineKeyboardMarkup:
-    username = bot_username or "MaxLoadBot"
+    username = bot_username or "angkutmedia_bot"
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [

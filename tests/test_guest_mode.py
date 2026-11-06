@@ -248,7 +248,7 @@ async def test_guest_message_help_on_mention_without_link(fake_deps):
     msg.answer_guest_query.assert_awaited_once()
     result = msg.answer_guest_query.await_args.kwargs["result"]
     assert isinstance(result, InlineQueryResultArticle)
-    assert "Guest Mode" in result.title or "MaxLoad" in result.title
+    assert "Guest Mode" in result.title or "aerichandesu" in result.title
 
 
 @pytest.mark.asyncio
